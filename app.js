@@ -669,9 +669,47 @@ document.getElementById('edit-save').addEventListener('click', () => {
   showToast('Gasto actualizado ✓');
 });
 
+// ── Quick save (URL params from Shortcut) ─────────────────────────────────────
+
+function checkQuickSave() {
+  const p = new URLSearchParams(window.location.search);
+  if (!p.get('quick')) return;
+
+  const amount = parseFloat(p.get('amount'));
+  if (!amount || isNaN(amount) || amount <= 0) return;
+
+  const cat  = p.get('cat')  || 'Otros';
+  const type = p.get('type') || 'gasto';
+  const cur  = p.get('cur')  || 'ARS';
+  const note = p.get('note') || '';
+
+  const expense = {
+    id: Date.now().toString(),
+    type, currency: cur, amount, category: cat,
+    note, date: todayStr(), createdAt: new Date().toISOString(),
+  };
+  expenses.unshift(expense);
+  saveExpenses(expenses);
+
+  window.history.replaceState({}, '', '/');
+
+  const overlay = document.getElementById('qs-overlay');
+  document.getElementById('qs-emoji').textContent  = categoryEmoji(cat);
+  document.getElementById('qs-cat').textContent    = cat;
+  document.getElementById('qs-amount').textContent = (type === 'ingreso' ? '+' : '') + formatMoney(amount, cur);
+  document.getElementById('qs-type').textContent   = type === 'ingreso' ? 'Ingreso guardado' : 'Gasto guardado';
+  overlay.classList.remove('hidden');
+}
+
+document.getElementById('qs-close').addEventListener('click', () => {
+  document.getElementById('qs-overlay').classList.add('hidden');
+});
+
+
 // ── Init ─────────────────────────────────────────────────────────────────────
 
 dateInput.value = todayStr();
+checkQuickSave();
 renderToday();
 amountInput.focus();
 
