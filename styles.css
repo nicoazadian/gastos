@@ -3,8 +3,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --primary: #4338ca;
-  --primary-dark: #3730a3;
+  --primary: #1D2C52;
+  --primary-dark: #152040;
   --bg: #f8f8fc;
   --surface: #ffffff;
   --border: #e5e7eb;
