@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Gastos" />
+  <title>Gastos</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="header">
+    <div id="header-date"></div>
+    <div id="header-balances">
+      <div class="balance-card" id="balance-ars">
+        <div class="balance-card-label">$ Pesos</div>
+        <div class="balance-card-amount" id="balance-ars-amount">$0</div>
+        <div class="balance-card-sub">
+          <span>↑ <span id="ars-gastos-hoy">$0</span></span>
+          <span>↓ <span id="ars-ingresos-hoy">$0</span></span>
+        </div>
+      </div>
+      <div class="balance-card" id="balance-usd">
+        <div class="balance-card-label">U$S Dólares</div>
+        <div class="balance-card-amount" id="balance-usd-amount">U$S 0</div>
+        <div class="balance-card-sub">
+          <span>↑ <span id="usd-gastos-hoy">U$S 0</span></span>
+          <span>↓ <span id="usd-ingresos-hoy">U$S 0</span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav id="tabs">
+    <button class="tab active" data-tab="hoy">Hoy</button>
+    <button class="tab" data-tab="historial">Historial</button>
+  </nav>
+
+  <!-- VIEW: HOY -->
+  <main id="view-hoy" class="view active">
+
+    <!-- QUICK ENTRY FORM -->
+    <section id="form-section">
+      <div id="top-toggles">
+        <div id="type-toggle">
+          <button class="type-btn active" data-type="gasto">↑ Gasto</button>
+          <button class="type-btn" data-type="ingreso">↓ Ingreso</button>
+        </div>
+        <div id="currency-toggle">
+          <button class="currency-btn active" data-currency="ARS">$ Pesos</button>
+          <button class="currency-btn" data-currency="USD">U$S Dólares</button>
+        </div>
+      </div>
+
+      <div id="amount-row">
+        <span id="currency-symbol">$</span>
+        <input id="amount-input" type="number" inputmode="decimal" placeholder="0.00" autocomplete="off" />
+      </div>
+
+      <div id="categories">
+        <button class="cat-btn active" data-cat="Supermercado">🛒<span>Supermercado</span></button>
+        <button class="cat-btn" data-cat="Delivery">🛵<span>Delivery</span></button>
+        <button class="cat-btn" data-cat="Comer afuera">🍽️<span>Comer afuera</span></button>
+        <button class="cat-btn" data-cat="Bares/alcohol">🍺<span>Bares</span></button>
+        <button class="cat-btn" data-cat="Compras varias">🛍️<span>Compras</span></button>
+        <button class="cat-btn" data-cat="Ropa">👕<span>Ropa</span></button>
+        <button class="cat-btn" data-cat="Salud">💊<span>Salud</span></button>
+        <button class="cat-btn" data-cat="Peluquería">✂️<span>Peluquería</span></button>
+        <button class="cat-btn" data-cat="Ahorros">💰<span>Ahorros</span></button>
+        <button class="cat-btn" data-cat="Tarjeta $">💳<span>Tarjeta $</span></button>
+        <button class="cat-btn" data-cat="Préstamo">🏦<span>Préstamo</span></button>
+        <button class="cat-btn" data-cat="Alquiler">🏠<span>Alquiler</span></button>
+        <button class="cat-btn" data-cat="Garantía alquiler">🔑<span>Garantía</span></button>
+        <button class="cat-btn" data-cat="Gastos comunes">🏢<span>G. comunes</span></button>
+        <button class="cat-btn" data-cat="Seguro auto">🚗<span>Seguro auto</span></button>
+        <button class="cat-btn" data-cat="Nafta">⛽<span>Nafta</span></button>
+        <button class="cat-btn" data-cat="UTE">⚡<span>UTE</span></button>
+        <button class="cat-btn" data-cat="Internet">🌐<span>Internet</span></button>
+        <button class="cat-btn" data-cat="Celular">📱<span>Celular</span></button>
+        <button class="cat-btn" data-cat="Tributos domiciliarios">🏛️<span>Tributos</span></button>
+        <button class="cat-btn" data-cat="Entradas evento">🎟️<span>Entradas</span></button>
+        <button class="cat-btn" data-cat="Otros">📦<span>Otros</span></button>
+      </div>
+
+      <div id="date-row">
+        <label for="date-input">📅 Fecha:</label>
+        <input id="date-input" type="date" />
+      </div>
+
+      <input id="note-input" type="text" placeholder="Nota (opcional)" autocomplete="off" />
+
+      <button id="save-btn">Guardar</button>
+    </section>
+
+    <!-- TODAY'S LIST -->
+    <section id="today-list-section">
+      <h2 id="today-list-title">Gastos de hoy</h2>
+      <ul id="today-list"></ul>
+      <p id="today-empty">No hay gastos registrados aún</p>
+    </section>
+
+  </main>
+
+  <!-- VIEW: HISTORIAL -->
+  <main id="view-historial" class="view">
+    <section id="historial-section">
+
+      <div id="hist-currency-toggle">
+        <button class="hist-currency-btn active" data-currency="ARS">$ Pesos</button>
+        <button class="hist-currency-btn" data-currency="USD">U$S Dólares</button>
+      </div>
+      <div id="hist-type-toggle">
+        <button class="hist-type-btn active" data-filter="todo">Todo</button>
+        <button class="hist-type-btn" data-filter="gastos">Gastos</button>
+        <button class="hist-type-btn" data-filter="ingresos">Ingresos</button>
+      </div>
+
+      <div id="historial-summary">
+        <div class="summary-card">
+          <div class="summary-label">Este mes</div>
+          <div class="summary-value" id="month-total">$0</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Promedio diario</div>
+          <div class="summary-value" id="avg-daily">$0</div>
+        </div>
+      </div>
+      <div id="chart-section">
+        <div class="hist-section-title" id="chart-title"></div>
+        <div id="donut-wrap">
+          <canvas id="donut-chart" width="220" height="220"></canvas>
+          <div id="donut-center">
+            <div id="donut-label">Total</div>
+            <div id="donut-total"></div>
+          </div>
+        </div>
+        <div id="cat-table"></div>
+      </div>
+      <div id="active-filter" class="hidden">
+        <span id="active-filter-label"></span>
+        <button id="clear-filter">× Ver todo</button>
+      </div>
+      <div id="historial-days"></div>
+    </section>
+  </main>
+
+  <!-- CHART TOOLTIP -->
+  <div id="chart-tooltip" class="hidden"></div>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <!-- EDIT MODAL -->
+  <div id="edit-overlay" class="hidden">
+    <div id="edit-modal">
+      <div id="edit-header">
+        <span>Editar gasto</span>
+        <button id="edit-close">×</button>
+      </div>
+
+      <div id="edit-amount-row">
+        <span id="edit-currency">$</span>
+        <input id="edit-amount" type="number" inputmode="decimal" placeholder="0.00" autocomplete="off" />
+      </div>
+
+      <div id="edit-categories">
+        <button class="cat-btn" data-cat="Supermercado">🛒<span>Supermercado</span></button>
+        <button class="cat-btn" data-cat="Delivery">🛵<span>Delivery</span></button>
+        <button class="cat-btn" data-cat="Comer afuera">🍽️<span>Comer afuera</span></button>
+        <button class="cat-btn" data-cat="Bares/alcohol">🍺<span>Bares</span></button>
+        <button class="cat-btn" data-cat="Compras varias">🛍️<span>Compras</span></button>
+        <button class="cat-btn" data-cat="Ropa">👕<span>Ropa</span></button>
+        <button class="cat-btn" data-cat="Salud">💊<span>Salud</span></button>
+        <button class="cat-btn" data-cat="Peluquería">✂️<span>Peluquería</span></button>
+        <button class="cat-btn" data-cat="Ahorros">💰<span>Ahorros</span></button>
+        <button class="cat-btn" data-cat="Tarjeta $">💳<span>Tarjeta $</span></button>
+        <button class="cat-btn" data-cat="Préstamo">🏦<span>Préstamo</span></button>
+        <button class="cat-btn" data-cat="Alquiler">🏠<span>Alquiler</span></button>
+        <button class="cat-btn" data-cat="Garantía alquiler">🔑<span>Garantía</span></button>
+        <button class="cat-btn" data-cat="Gastos comunes">🏢<span>G. comunes</span></button>
+        <button class="cat-btn" data-cat="Seguro auto">🚗<span>Seguro auto</span></button>
+        <button class="cat-btn" data-cat="Nafta">⛽<span>Nafta</span></button>
+        <button class="cat-btn" data-cat="UTE">⚡<span>UTE</span></button>
+        <button class="cat-btn" data-cat="Internet">🌐<span>Internet</span></button>
+        <button class="cat-btn" data-cat="Celular">📱<span>Celular</span></button>
+        <button class="cat-btn" data-cat="Tributos domiciliarios">🏛️<span>Tributos</span></button>
+        <button class="cat-btn" data-cat="Entradas evento">🎟️<span>Entradas</span></button>
+        <button class="cat-btn" data-cat="Otros">📦<span>Otros</span></button>
+      </div>
+
+      <div id="edit-date-row">
+        <label for="edit-date">📅 Fecha:</label>
+        <input id="edit-date" type="date" />
+      </div>
+
+      <input id="edit-note" type="text" placeholder="Nota (opcional)" autocomplete="off" />
+
+      <div id="edit-buttons">
+        <button id="edit-cancel">Cancelar</button>
+        <button id="edit-save">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal">
+      <p>¿Eliminar este gasto?</p>
+      <div id="modal-buttons">
+        <button id="modal-cancel">Cancelar</button>
+        <button id="modal-confirm">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
